@@ -160,14 +160,14 @@ void loadTextures() {
      
        for (std::string name : names) {
            sf::Texture texture;
-           if (!texture.loadFromFile("files/images/" + name + ".png")) {
+           if (!texture.loadFromFile("images/" + name + ".png")) {
                cerr << "Failed to load " << name << ".png" << endl;
                exit(1);
            }
            textures[name] = texture;
        }
 
-       if (!digitsTexture.loadFromFile("files/images/digits.png")) {
+       if (!digitsTexture.loadFromFile("images/digits.png")) {
            cerr << "Failed to load digits.png" << endl;
            exit(1);
        }

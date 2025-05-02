@@ -199,7 +199,7 @@ void loadTextures() {
                } 
                else {
                    tile->setTexture(textures["tile_hidden"]);
-                   if (tile->isFlaggedTile()) {
+                   if (tile->isFlagged()) {
                        tile->setTexture(textures["tile_hidden"], &textures["flag"]);
                    } 
                    else if (debugMode && tile->hasMine()) {

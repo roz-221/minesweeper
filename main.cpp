@@ -10,6 +10,7 @@ int main() {
     int cols = 25;
     int rows = 16;
     int mines = 50;
+    
     if (config.good()) {
         config >> cols >> rows >> mines;
     }
@@ -17,8 +18,8 @@ int main() {
     int width = cols * 32;
     int height = rows * 32 + 100;
 
-    std::string playerName = runWelcomeWindow(width, height);
-    if (playerName.empty()) {
+    std::string name = runWelcomeWindow(width, height);
+    if (name.empty()) {
         return 0;
     }
 

@@ -60,16 +60,16 @@ public:
    }
 
   void updateAdjacents() {
-       int dx[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
-       int dy[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
+       int diffx[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
+       int diffy[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
        for (int y = 0; y < rows; ++y) {
            for (int x = 0; x < cols; ++x) {
                std::vector<Tile*> neighbors;
                int count = 0;
                for (int i = 0; i < 8; ++i) {
-                   int nx = x + dx[i], ny = y + dy[i];
-                   if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
-                       Tile* neighbor = &tiles[ny][nx];
+                   int newx = x + diffx[i], newy = y + diffy[i];
+                   if (newx >= 0 && newx < cols && newy >= 0 && newy < rows) {
+                       Tile* neighbor = &tiles[newy][newx];
                        neighbors.push_back(neighbor);
                        if (neighbor->hasMine()) {
                            count++;
@@ -81,7 +81,17 @@ public:
            }
        }
    }
-
+   void revealAdjacentZeros(Tile* tile) {
+       for (Tile* neighbor : tile->getNeighbors()) {
+           if (!neighbor->isRevealedTile() && !neighbor->isFlagged() && !neighbor->hasMine()) {
+               neighbor->reveal();
+               unrevealedSafe--;
+               if (neighbor->getAdjacentMineCount() == 0) {
+                   revealAdjacentZeros(neighbor);
+               }
+           }
+       }
+   }
    void revealTile(int x, int y) {
        Tile* tile = getTile(x, y);
        if (!tile || tile->isRevealedTile() || tile->isFlagged()) {
@@ -93,18 +103,6 @@ public:
        }
        if (tile->getAdjacentMineCount() == 0 && !tile->hasMine()) {
            revealAdjacentZeros(tile);
-       }
-   }
-
-   void revealAdjacentZeros(Tile* tile) {
-       for (Tile* neighbor : tile->getNeighbors()) {
-           if (!neighbor->isRevealedTile() && !neighbor->isFlagged() && !neighbor->hasMine()) {
-               neighbor->reveal();
-               unrevealedSafe--;
-               if (neighbor->getAdjacentMineCount() == 0) {
-                   revealAdjacentZeros(neighbor);
-               }
-           }
        }
    }
 

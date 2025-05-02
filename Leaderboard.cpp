@@ -109,7 +109,7 @@ void updateLeaderboard(const std::string& playerName, int timeSec, int width, in
    showLeaderboardWindow(leaders, width, height);
 }
 
-void viewLeaderboardOnly(int width, int height) {
+void viewLeaderboard(int width, int height) {
    string path = "files/leaderboard.txt";
    std::vector<Entry> leaders = readLeaderboard(path);
    showLeaderboardWindow(leaders, width, height);

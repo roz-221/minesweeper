@@ -8,4 +8,5 @@ SFML version: 2.5.1 \
 IDE: Visual Studio/CLion \
 Other notes: I switched between Visual Studio and CLion
 during the project, so there might be some inconsistencies in
-formatting.
+formatting. Also, I had some issues with pushing to git, so this repo is just
+a copy/paste from my IDE.

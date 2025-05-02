@@ -131,7 +131,7 @@ public:
        for (int y = 0; y < rows; ++y) {
            for (int x = 0; x < cols; ++x) {
                if (tiles[y][x].hasMine()) {
-                   tiles[y][x].forceFlag();
+                   tiles[y][x].setFlag();
                }
            }
        }

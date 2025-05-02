@@ -27,9 +27,9 @@ private:
    sf::Sprite leaderboardButton;
    sf::Sprite debugButton;
 
-   time_point<steady_clock> startTime;
-   time_point<steady_clock> pauseStart;
-   time_point<steady_clock> leaderboardStart;
+   time_point<std::chrono::steady_clock> startTime;
+   time_point<std::chrono::steady_clock> pauseStart;
+   time_point<std::chrono::steady_clock> leaderboardStart;
    int pausedSeconds = 0;
    int finalTime = 0;
    bool isViewingLeaderboard = false;
@@ -56,10 +56,10 @@ private:
        if (pauseButton.getGlobalBounds().contains(x, y) && !isGameOver) {
            isPaused = !isPaused;
            if (isPaused) {
-               pauseStart = steady_clock::now();
+               pauseStart = std::chrono::steady_clock::now();
                pauseButton.setTexture(textures["play"]);
            } else {
-               pausedSeconds += duration_cast<seconds>(steady_clock::now() - pauseStart).count();
+               pausedSeconds += duration_cast<seconds>(std::chrono::steady_clock::now() - pauseStart).count();
                pauseButton.setTexture(textures["pause"]);
            }
            return;
@@ -79,10 +79,10 @@ private:
                if (isPaused) {
                    timeInSeconds = pausedSeconds;
                } else {
-                   timeInSeconds = duration_cast<seconds>(steady_clock::now() - startTime).count() - pausedSeconds;
+                   timeInSeconds = duration_cast<seconds>(std::chrono::steady_clock::now() - startTime).count() - pausedSeconds;
                }
            }
-           leaderboardStart = steady_clock::now();
+           leaderboardStart = std::chrono::steady_clock::now();
            isViewingLeaderboard = true;
 
            updateTileTexture();
@@ -99,7 +99,7 @@ private:
            window.display();
            viewLeaderboard(width, height);
            if (!isPaused) {
-               pausedSeconds += duration_cast<seconds>(steady_clock::now() - leaderboardStart).count();
+               pausedSeconds += duration_cast<seconds>(std::chrono::steady_clock::now() - leaderboardStart).count();
            }
            isViewingLeaderboard = false;
            return;
@@ -116,7 +116,7 @@ private:
      
        if (!hasBegun) {
            hasBegun = true;
-           startTime = steady_clock::now();
+           startTime = std::chrono::steady_clock::now();
        }
 
        if (mouse.button == sf::Mouse::Left) {
@@ -125,14 +125,14 @@ private:
                isGameOver = true;
                smile.setTexture(textures["face_lose"]);
                board.revealAllMines();
-               finalTime = duration_cast<seconds>(steady_clock::now() - startTime).count() - pausedSeconds;
+               finalTime = duration_cast<seconds>(std::chrono::steady_clock::now() - startTime).count() - pausedSeconds;
            } 
            else if (board.checkVictory()) {
                isGameOver = true;
                isVictory = true;
                smile.setTexture(textures["face_win"]);
                board.flagAllMines();
-               finalTime = duration_cast<seconds>(steady_clock::now() - startTime).count() - pausedSeconds;
+               finalTime = duration_cast<seconds>(std::chrono::steady_clock::now() - startTime).count() - pausedSeconds;
 
                updateTileTexture();
                window.clear(sf::Color::White);
@@ -251,7 +251,7 @@ void loadTextures() {
            if (isPaused) {
                totalSec = duration_cast<seconds>(pauseStart - startTime).count() - pausedSeconds;
            } else {
-               totalSec = duration_cast<seconds>(steady_clock::now() - startTime).count() - pausedSeconds;
+               totalSec = duration_cast<seconds>(std::chrono::steady_clock::now() - startTime).count() - pausedSeconds;
            }
        }
        totalSec = std::max(0, totalSec);

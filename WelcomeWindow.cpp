@@ -3,8 +3,7 @@
 
 static void setText(sf::Text& text, float x, float y) {
     sf::FloatRect bounds = text.getLocalBounds();
-    text.setOrigin(bounds.left + bounds.width / 2.0f,
-                   bounds.top + bounds.height / 2.0f);
+    text.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
     text.setPosition(x, y);
 }
 
@@ -39,7 +38,7 @@ std::string runWelcomeWindow(int width, int height) {
     prompt.setStyle(sf::Text::Bold);
     setText(prompt, width / 2.0f, height / 2.0f - 75);
 
-    std::string playerName;
+    std::string name;
     sf::Text nameText("", font, 18);
     nameText.setFillColor(sf::Color::Yellow);
     nameText.setStyle(sf::Text::Bold);
@@ -54,22 +53,22 @@ std::string runWelcomeWindow(int width, int height) {
             }
             if (event.type == sf::Event::TextEntered) {
                 char ch = static_cast<char>(event.text.unicode);
-                if (std::isalpha(ch) && playerName.length() < 10) {
-                    playerName += ch;
+                if (std::isalpha(ch) && name.length() < 10) {
+                    name += ch;
                 }
             }
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Backspace && !playerName.empty()) {
-                    playerName.pop_back();
+                if (event.key.code == sf::Keyboard::Backspace && !name.empty()) {
+                    name.pop_back();
                 }
-                if (event.key.code == sf::Keyboard::Enter && !playerName.empty()) {
+                if (event.key.code == sf::Keyboard::Enter && !name.empty()) {
                     window.close();
-                    return formatName(playerName);
+                    return formatName(name);
                 }
             }
         }
 
-        nameText.setString(formatName(playerName) + "|");
+        nameText.setString(formatName(name) + "|");
         setText(nameText, width / 2.0f, height / 2.0f - 45);
 
         window.clear(sf::Color::Blue);

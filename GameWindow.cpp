@@ -82,18 +82,19 @@ private:
                    timeInSeconds = duration_cast<seconds>(steady_clock::now() - startTime).count() - pausedSeconds;
                }
            }
-
            leaderboardStart = steady_clock::now();
            isViewingLeaderboard = true;
 
            updateTileTexture();
            window.clear(sf::Color::White);
+          
            board.draw(window, debugMode, isPaused || isViewingLeaderboard,&textures["tile_revealed"], &textures["mine"], &textures["flag"]);
             window.draw(pauseButton);
            window.draw(smile);
            window.draw(debugButton);
            window.draw(leaderboardButton);
-           drawMineCounter();
+           
+          drawMineCounter();
            drawTimer();
            window.display();
            viewLeaderboard(width, height);
@@ -135,11 +136,11 @@ private:
 
                updateTileTexture();
                window.clear(sf::Color::White);
-               board.draw(window, debugMode, isPaused || isViewingLeaderboard,
-                          &textures["tile_revealed"], &textures["mine"], &textures["flag"]);
-               window.draw(smile);
-               window.draw(debugButton);
+               board.draw(window, debugMode, isPaused || isViewingLeaderboard, &textures["tile_revealed"], &textures["mine"], &textures["flag"]);
+               
+              window.draw(smile);
                window.draw(pauseButton);
+               window.draw(debugButton);
                window.draw(leaderboardButton);
                drawMineCounter();
                drawTimer();
@@ -147,17 +148,14 @@ private:
 
                updateLeaderboard(playerName, finalTime, cols * 16, rows * 16 + 50);
            }
-       } else if (mouse.button == sf::Mouse::Right) {
+       } 
+       else if (mouse.button == sf::Mouse::Right) {
            board.toggleFlag(tilex, tiley);
        }
    }
 
 void loadTextures() {
-       std::string names[] = {
-           "tile_hidden", "tile_revealed", "flag", "mine","number_1", "number_2", "number_3", "number_4",
-           "number_5", "number_6", "number_7", "number_8","face_happy", "face_win", "face_lose",
-           "pause", "play", "leaderboard", "debug" };
-     
+       std::string names[] = {"tile_hidden", "tile_revealed", "flag", "mine","number_1", "number_2", "number_3", "number_4", "number_5", "number_6", "number_7", "number_8","face_happy", "face_win", "face_lose", "pause", "play", "leaderboard", "debug" };
        for (std::string name : names) {
            sf::Texture texture;
            if (!texture.loadFromFile("images/" + name + ".png")) {
@@ -183,7 +181,6 @@ void loadTextures() {
      
        pauseButton.setTexture(textures["pause"]);
        pauseButton.setPosition((cols * 32) - 240, 32 * (rows + 0.5f));
-       
    }
 
    void updateTileTexture() {

@@ -1,91 +1,92 @@
-#include "Tile.h"
+#include <SFML/Graphics.hpp>
+#include <vector>
 
-Tile::Tile(int xPos, int yPos)
-    : x(xPos), y(yPos) {
-    baseSprite.setPosition(x * 32.f, y * 32.f);
-    overlaySprite.setPosition(x * 32.f, y * 32.f);
-}
+class Tile {
+private:
+   bool isMine = false;
+    bool isFlagged = false;
+   bool isRevealed = false;
+   sf::Sprite base;
+   std::vector<Tile*> neighbors;
+   sf::Sprite overlaySprite;
+   int adjacentMines = 0;
+   int x, y;
 
-void Tile::setMine(bool mine) {
-    isMine = mine;
-}
+public:
+   Tile (int x, int y) : x(x), y(y){
+       base.setPosition(x * 32, y * 32);
+       overlaySprite.setPosition(x * 32, y * 32);
+   }
 
-void Tile::setTexture(sf::Texture& base, sf::Texture* overlay) {
-    baseSprite.setTexture(base);
-    if (overlay) {
-        overlaySprite.setTexture(*overlay);
-    }
-}
+   void setMine(bool mine) { 
+       isMine = mine; 
+   }
+   void setFlag() {
+       if (!isRevealed) isFlagged = true;
+   }
 
-void Tile::draw(sf::RenderWindow& window, bool debugMode, bool isPaused,
-                sf::Texture* tileRevealedTex, sf::Texture* mineTex, sf::Texture* flagTex) const {
-    if (isPaused && tileRevealedTex) {
-        sf::Sprite flat(*tileRevealedTex);
-        flat.setPosition(baseSprite.getPosition());
-        window.draw(flat);
-        return;
-    }
-    window.draw(baseSprite);
-    if (isRevealed && isMine) {
-        if (isFlagged && flagTex) {
-            sf::Sprite flag(*flagTex);
-            flag.setPosition(baseSprite.getPosition());
-            window.draw(flag);
-        }
-        if (mineTex) {
-            sf::Sprite mine(*mineTex);
-            mine.setPosition(baseSprite.getPosition());
-            window.draw(mine);
-        }
-    } else if (isRevealed && adjacentMines > 0) {
-        window.draw(overlaySprite);
-    } else if (isFlagged && !isRevealed && flagTex) {
-        sf::Sprite flag(*flagTex);
-        flag.setPosition(baseSprite.getPosition());
-        window.draw(flag);
-    } else if (debugMode && isMine && !isRevealed && mineTex) {
-        sf::Sprite mine(*mineTex);
-        mine.setPosition(baseSprite.getPosition());
-        window.draw(mine);
-    }
-}
+   void setTexture(sf::Texture& baseTexture, sf::Texture* overlay = nullptr) {
+       base.setTexture(baseTexture);
+       if (overlay) {
+           overlaySprite.setTexture(*overlay);
+       }
+   }
 
-void Tile::reveal() {
-    if (!isRevealed) {
-        isRevealed = true;
-    }
-}
+   void draw(sf::RenderWindow& window, bool debug, bool isPaused, sf::Texture* tileRevealedTex, sf::Texture* mineTex, sf::Texture* flagTex) const {
+       if (isPaused && tileRevealedTex != nullptr) {
+           sf::Sprite flat(*tileRevealedTex);
+           flat.setPosition(base.getPosition());
+           window.draw(flat);
+           return;
+       }
+    
+       window.draw(base);
 
-void Tile::toggleFlag() {
-    if (!isRevealed) {
-        isFlagged = !isFlagged;
-    }
-}
+       if (isRevealed && isMine) {
+           if (isFlagged && flagTex) {
+               sf::Sprite flag(*flagTex);
+               flag.setPosition(base.getPosition());
+               window.draw(flag);
+           }
+           if (mineTex) {
+               sf::Sprite mine(*mineTex);
+               mine.setPosition(base.getPosition());
+               window.draw(mine);
+           }
+       }
+       else if (isRevealed && adjacentMines > 0) {
+           window.draw(overlaySprite);
+       }
+       else if (debug && isMine && !isRevealed && mineTex) {
+           sf::Sprite mine(*mineTex);
+           mine.setPosition(base.getPosition());
+           window.draw(mine);
+       }
+       else if (isFlagged && !isRevealed && flagTex) {
+           sf::Sprite flag(*flagTex);
+           flag.setPosition(base.getPosition());
+           window.draw(flag);
+       }
+   }
+   void reveal() {
+       if (!isRevealed) {
+           isRevealed = true;
+       }
+   }
 
-void Tile::forceFlag() {
-    if (!isRevealed) {
-        isFlagged = true;
-    }
-}
+   void setNeighbors(const std::vector<Tile*>& adjacent) { neighbors = adjacent; }
 
-bool Tile::contains(int mouseX, int mouseY) const {
-    return baseSprite.getGlobalBounds().contains(static_cast<float>(mouseX), static_cast<float>(mouseY));
-}
+   void toggleFlag() { if (!isRevealed) isFlagged = !isFlagged; }
 
-void Tile::setNeighbors(const std::vector<Tile*>& adjacent) {
-    neighbors = adjacent;
-}
+   bool contains(int mouseX, int mouseY) const {
+       return base.getGlobalBounds().contains(mouseX, mouseY);
+   }
 
-void Tile::setAdjacentMines(int count) {
-    adjacentMines = count;
-}
+   void setAdjacentMines(int count) { adjacentMines = count; }
 
-bool Tile::hasMine() const { return isMine; }
-
-bool Tile::isRevealedTile() const { return isRevealed; }
-
-bool Tile::isFlaggedTile() const { return isFlagged; }
-
-int Tile::getAdjacentMineCount() const { return adjacentMines; }
-
-std::vector<Tile*> Tile::get"));
+   bool hasMine() const { return isMine; }
+   bool isRevealedTile() const { return isRevealed; }
+   bool isFlagged() const { return isFlagged; }
+   int getAdjacentMineCount() const { return adjacentMines; }
+   std::vector<Tile*> getNeighbors() const { return neighbors; }
+};
